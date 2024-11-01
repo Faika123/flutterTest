@@ -45,41 +45,50 @@ class ProfilePage extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.person),
               title: Text('Personal Data'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PersonalDataPage()));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PersonalDataPage(),
+                  ),
+                );
               },
             ),
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {},
             ),
             ListTile(
               leading: Icon(Icons.document_scanner),
               title: Text('E-Statement'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {},
             ),
             ListTile(
               leading: Icon(Icons.code),
               title: Text('Referral Code'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {},
             ),
             ListTile(
               leading: Icon(Icons.help),
               title: Text('FAQs'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {},
             ),
             ListTile(
               leading: Icon(Icons.book),
               title: Text('Our Handbook'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {},
             ),
             ListTile(
               leading: Icon(Icons.group),
               title: Text('Community'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {
                 //Navigator.push(context,
                 // MaterialPageRoute(builder: (context) => CommunityPage()));

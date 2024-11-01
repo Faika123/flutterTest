@@ -45,10 +45,10 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 80,
-                height: 80,
+                width: 100,
+                height: 100,
                 child: Image.asset(
-                  "assets/images/image1.png",
+                  "assets/images/image1.jpg",
                   height: 250,
                 ),
               ),
