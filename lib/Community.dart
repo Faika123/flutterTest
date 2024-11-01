@@ -155,7 +155,7 @@ class CommunityCard extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'Join Forum',
+                  'CHarfn Mohamed',
                   style: TextStyle(color: Colors.black),
                 ),
                 Icon(
