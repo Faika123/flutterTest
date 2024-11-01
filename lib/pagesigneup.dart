@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SignUpScreen();
+    return SignupScreen();
   }
 }
 
-class SignUpScreen extends StatelessWidget {
+class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +41,10 @@ class SignUpScreen extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   labelText: "Name",
-                  prefixIcon: Icon(Icons.person),
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 198, 199, 201)),
+                  prefixIcon: Icon(Icons.person,
+                      color: const Color.fromARGB(255, 44, 186, 241)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -51,7 +54,10 @@ class SignUpScreen extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   labelText: "Email",
-                  prefixIcon: Icon(Icons.email),
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 198, 199, 201)),
+                  prefixIcon: Icon(Icons.email,
+                      color: const Color.fromARGB(255, 44, 186, 241)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -61,7 +67,10 @@ class SignUpScreen extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   labelText: "Phone",
-                  prefixIcon: Icon(Icons.phone),
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 198, 199, 201)),
+                  prefixIcon: Icon(Icons.phone,
+                      color: const Color.fromARGB(255, 44, 186, 241)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -73,7 +82,10 @@ class SignUpScreen extends StatelessWidget {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: "Password",
-                  prefixIcon: Icon(Icons.lock),
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 198, 199, 201)),
+                  prefixIcon: Icon(Icons.lock,
+                      color: const Color.fromARGB(255, 44, 186, 241)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -84,7 +96,10 @@ class SignUpScreen extends StatelessWidget {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: "Confirm Password",
-                  prefixIcon: Icon(Icons.lock),
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 198, 199, 201)),
+                  prefixIcon: Icon(Icons.lock,
+                      color: const Color.fromARGB(255, 44, 186, 241)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -93,7 +108,7 @@ class SignUpScreen extends StatelessWidget {
               SizedBox(height: 25),
               ElevatedButton(
                 onPressed: () {
-                  // Add signup functionality here
+                  // Add Signup functionality here
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 10, 86, 149),
@@ -107,6 +122,7 @@ class SignUpScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -118,7 +134,7 @@ class SignUpScreen extends StatelessWidget {
                 child: Text(
                   "Already have an account? Login",
                   style: TextStyle(
-                    color: const Color.fromARGB(255, 46, 47, 47),
+                    color: const Color.fromARGB(255, 53, 52, 52),
                   ),
                 ),
               ),

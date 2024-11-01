@@ -1,7 +1,39 @@
 import 'package:flutter/material.dart';
-// Import your SignUpPage file
+import 'package:flutter_application_1/pagesigneup.dart';
+import 'package:flutter_application_1/profil.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future<void> login(BuildContext context) async {
+    try {
+      // Here you can add your authentication logic.
+      // For demonstration, we’re just adding user data to Firestore.
+      await users.add({
+        'email': emailController.text,
+        'password': passwordController
+            .text, // Consider hashing the password in a real app
+      });
+      print("User logged in");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User successfully logged in')));
+
+      // Navigate to the Profile page after successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ProfilePage()),
+      );
+    } catch (error) {
+      print("Failed to log in user: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to log in user: $error')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,14 +47,9 @@ class LoginPage extends StatelessWidget {
               Container(
                 width: 80,
                 height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child: Icon(
-                  Icons.person_outline,
-                  color: Colors.blue[900],
-                  size: 40,
+                child: Image.asset(
+                  "assets/images/image1.png",
+                  height: 250,
                 ),
               ),
               SizedBox(height: 20),
@@ -42,23 +69,45 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 40),
-              CustomTextField(
-                icon: Icons.email,
-                hintText: 'Email',
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  labelText: 'Email',
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 201, 202, 204)),
+                  prefixIcon: Icon(Icons.email,
+                      color: const Color.fromARGB(255, 51, 198, 243)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
               SizedBox(height: 20),
-              CustomTextField(
-                icon: Icons.lock,
-                hintText: 'Password',
+              TextField(
+                controller: passwordController,
                 obscureText: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  labelText: 'Password',
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 198, 199, 201)),
+                  prefixIcon: Icon(Icons.lock,
+                      color: const Color.fromARGB(255, 44, 186, 241)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
               SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                    // Add forgot password functionality here
-                  },
+                  onPressed: () {},
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(color: Colors.blue[900]),
@@ -77,7 +126,7 @@ class LoginPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: () {
-                    // Implement login action here
+                    login(context); // Call login function here
                   },
                   child: Text(
                     'LOGIN',
@@ -91,47 +140,21 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/signup'); // Navigate to SignUpPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignupPage()),
+                  );
                 },
                 child: Text(
                   "Don't have an account? Create a new account",
                   style: TextStyle(
-                    color: Colors.blue[900],
+                    color: const Color.fromARGB(255, 10, 10, 10),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  final IconData icon;
-  final String hintText;
-  final bool obscureText;
-
-  CustomTextField({
-    required this.icon,
-    required this.hintText,
-    this.obscureText = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: Icon(icon, color: Colors.blue[900]),
-        filled: true,
-        fillColor: Colors.grey[100],
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
         ),
       ),
     );
