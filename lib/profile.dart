@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'personaldata.dart';
-
+import 'community.dart';
+import 'cartpage.dart';
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -56,6 +57,19 @@ class ProfilePage extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: Icon(Icons.add_shopping_cart),
+              title: Text('Add product'),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               trailing: Icon(Icons.chevron_right),
@@ -90,8 +104,13 @@ class ProfilePage extends StatelessWidget {
               title: Text('Community'),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                //Navigator.push(context,
-                // MaterialPageRoute(builder: (context) => CommunityPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommunityPage(),
+                  ),
+                );
+              
               },
             ),
             Spacer(),

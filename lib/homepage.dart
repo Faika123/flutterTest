@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'login.dart';
 import 'profile.dart';
+import 'productpage.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _homepagestate();
+}
+
+class _homepagestate extends State<HomePage> {
   final List<Map<String, String>> items = [
     {
       'image': 'images/image3.jpg',
@@ -35,28 +41,20 @@ class HomePage extends StatelessWidget {
       'description': 'Description',
       'price': '\$160.00'
     },
-    {
-      'image': 'images/image8.jpg',
-      'name': 'Item name',
-      'description': 'Description',
-      'price': '\$180.00'
-    },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 250, 247, 247),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color.fromARGB(255, 250, 247, 247),
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Colors.black),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.person, color: Colors.black),
-            onPressed: () {},
+            icon: Icon(Icons.notification_add, color: Colors.black),
+            onPressed: () {
+            },
           ),
         ],
       ),
@@ -106,7 +104,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search bar
+              // Search bar and person icon in a row
               Row(
                 children: [
                   Expanded(
@@ -121,6 +119,25 @@ class HomePage extends StatelessWidget {
                         filled: true,
                         fillColor: Colors.white,
                       ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 3,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.shopping_cart, color: Colors.black),
+                      onPressed: () {},
                     ),
                   ),
                 ],
@@ -155,77 +172,92 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(Map<String, String> item) {
-    return Container(
-      width: 150,
-      margin: EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 3,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  item['image']!,
-                  fit: BoxFit.cover,
-                  height: 120,
-                  width: double.infinity,
-                ),
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              item['name']!,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+ Widget _buildCard(Map<String, String> item) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductPage(
+              image: item['image']!,
+              name: item['name']!,
+              description: item['description']!,
+              price: item['price']!,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              item['description']!,
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+        );
+      },
+      child: Container(
+        width: 150,
+        margin: EdgeInsets.only(right: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: Offset(0, 3),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                Text(
-                  item['price']!,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    item['image']!,
+                    fit: BoxFit.cover,
+                    height: 120,
+                    width: double.infinity,
+                  ),
                 ),
-                Icon(
-                  Icons.add_circle,
-                  color: Colors.blue,
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                item['name']!,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                item['description']!,
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    item['price']!,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.add_circle,
+                    color: const Color.fromARGB(255, 0, 13, 24),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

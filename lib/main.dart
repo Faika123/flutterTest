@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_application_1/homepage.dart';
 import 'login.dart';
 import 'signup.dart';
 import 'profile.dart';
-import 'homepage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
       routes: {
-        '/profile': (context) => ProfilePage(),
+        "home": (context) => HomePage(),
       },
     );
   }
