@@ -1,33 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'login.dart';
 
 class PersonalDataPage extends StatefulWidget {
+  final String userId; // Add userId to identify the document to update/delete
+  final Map<String, dynamic> userData;
+
+  PersonalDataPage({required this.userId, required this.userData});
+
   @override
   _PersonalDataPageState createState() => _PersonalDataPageState();
 }
 
 class _PersonalDataPageState extends State<PersonalDataPage> {
-  String _selectedGender = 'Male'; // Default gender
-  DateTime _selectedDate = DateTime.now(); // Default date
-  String? _selectedIncome; // Income selection
-  final List<String> incomeOptions = [
-    '\$500 - \$1,000 / year',
-    '\$1,000 - \$2,000 / year',
-    '\$2,000 - \$3,000 / year',
-    '\$3,000 - \$4,000 / year',
-  ];
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  late TextEditingController phoneController;
+  late TextEditingController passwordController; // Optional: Only if you want to allow password changes
+  late TextEditingController confirmPasswordController; // Optional: Only if you want to allow password changes
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.userData['name']);
+    emailController = TextEditingController(text: widget.userData['email']);
+    phoneController = TextEditingController(text: widget.userData['phone']);
+    passwordController = TextEditingController(); // Clear initially
+    confirmPasswordController = TextEditingController(); // Clear initially
+  }
+
+  Future<void> updateUser() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await FirebaseFirestore.instance.collection('users').doc(widget.userId).update({
+          'name': nameController.text,
+          'email': emailController.text,
+          'phone': phoneController.text,
+          // Optionally include password logic if necessary
+          // 'password': passwordController.text, 
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User data updated successfully')));
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update user: $error')));
+      }
     }
+  }
+
+  Future<void> deleteUser() async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(widget.userId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User deleted successfully')));
+     // Navigator.of(context).pop(); // Go back after deletion
+     Navigator.pushReplacementNamed(context, '/login');
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete user: $error')));
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -35,7 +73,7 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Personal Data"),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
@@ -44,138 +82,126 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                      8), // Rounded corners for the profile image
-                  image: DecorationImage(
-                    image:
-                        AssetImage('assets/images/image2.jpg'), // Profile image
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text("Your Name"),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'William John Malik',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            Text("Date of Birth"),
-            GestureDetector(
-              onTap: () => _selectDate(context),
-              child: AbsorbPointer(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: '${_selectedDate.toLocal()}'.split(' ')[0],
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            Text("Your Job"),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Successor Designer',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            Text("Monthly Income"),
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                hintText: _selectedIncome ?? 'Select Income',
-                border: OutlineInputBorder(),
-                suffixIcon: DropdownButton<String>(
-                  icon: Icon(Icons.arrow_drop_down),
-                  underline: SizedBox(),
-                  items: incomeOptions
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedIncome = newValue;
-                    });
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            Text("Gender"),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Box for Male
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/image2.jpg'),
+                      fit: BoxFit.cover,
                     ),
-                    child: Row(
-                      children: [
-                        Radio<String>(
-                          value: 'Male',
-                          groupValue: _selectedGender,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _selectedGender = value!;
-                            });
-                          },
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text("Your Name"),
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  hintText: 'Your Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.isEmpty ? 'Please enter your name' : null,
+              ),
+              SizedBox(height: 16),
+              Text("Email"),
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  hintText: 'Your Email',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.isEmpty ? 'Please enter your email' : null,
+              ),
+              SizedBox(height: 16),
+              Text("Phone"),
+              TextFormField(
+                controller: phoneController,
+                decoration: InputDecoration(
+                  hintText: 'Your Phone',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+                validator: (value) => value!.isEmpty ? 'Please enter your phone number' : null,
+              ),
+              SizedBox(height: 16),
+              Text("Password"),
+              TextFormField(
+                controller: passwordController,
+                decoration: InputDecoration(
+                  hintText: '********',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 16),
+              Text("Confirm Password"),
+              TextFormField(
+                controller: confirmPasswordController,
+                decoration: InputDecoration(
+                  hintText: '********',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 32),
+              // Buttons for editing and deleting
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: updateUser,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      backgroundColor: Colors.blue,
+                    ),
+                    child: Text("Modifier", style: TextStyle(color: Colors.white)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Show confirmation dialog before deleting
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Confirm Delete'),
+                          content: Text('Are you sure you want to delete your account?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(), // Cancel
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                deleteUser(); // Call the delete function
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
                         ),
-                        Text('Male'),
-                      ],
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      backgroundColor: Colors.red,
                     ),
+                    child: Text("Supprimer", style: TextStyle(color: Colors.white)),
+                    
                   ),
-                ),
-                SizedBox(width: 16),
-                // Box for Female
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Radio<String>(
-                          value: 'Female',
-                          groupValue: _selectedGender,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _selectedGender = value!;
-                            });
-                          },
-                        ),
-                        Text('Female'),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-      backgroundColor: Colors.white, // Set background color to white
+      backgroundColor: Colors.white,
     );
   }
 }

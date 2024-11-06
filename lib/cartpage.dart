@@ -2,7 +2,17 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(CartPage());
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  // Define quantities for each cart item
+  int quantityMinimalistChair = 2;
+  int quantityElegantWhiteChair = 1;
+  int quantityVintageChair = 1;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,9 +37,21 @@ class CartPage extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildCartItem('Minimalist Chair', 'assets/images/image3.jpg', 235.00, 2),
-                    _buildCartItem('Elegant White Chair', 'assets/images/image5.jpg', 124.00, 1),
-                    _buildCartItem('Vintage Chair', 'assets/images/image4.jpg', 89.00, 1),
+                    _buildCartItem('Minimalist Chair', 'assets/images/image3.jpg', 235.00, quantityMinimalistChair, (newQuantity) {
+                      setState(() {
+                        quantityMinimalistChair = newQuantity;
+                      });
+                    }),
+                    _buildCartItem('Elegant White Chair', 'assets/images/image5.jpg', 124.00, quantityElegantWhiteChair, (newQuantity) {
+                      setState(() {
+                        quantityElegantWhiteChair = newQuantity;
+                      });
+                    }),
+                    _buildCartItem('Vintage Chair', 'assets/images/image4.jpg', 89.00, quantityVintageChair, (newQuantity) {
+                      setState(() {
+                        quantityVintageChair = newQuantity;
+                      });
+                    }),
                   ],
                 ),
               ),
@@ -78,7 +100,7 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCartItem(String title, String imagePath, double price, int quantity) {
+  Widget _buildCartItem(String title, String imagePath, double price, int quantity, Function(int) onQuantityChanged) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -88,8 +110,8 @@ class CartPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
               imagePath,
-              width: 80, // Increased image width
-              height: 80, // Increased image height
+              width: 80,
+              height: 80,
               fit: BoxFit.cover,
             ),
           ),
@@ -114,7 +136,9 @@ class CartPage extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.remove),
                 onPressed: () {
-                  // Implement logic to decrease quantity here
+                  if (quantity > 1) {
+                    onQuantityChanged(quantity - 1);
+                  }
                 },
               ),
               Container(
@@ -131,7 +155,7 @@ class CartPage extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  // Implement logic to increase quantity here
+                  onQuantityChanged(quantity + 1);
                 },
               ),
             ],

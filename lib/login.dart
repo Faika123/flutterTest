@@ -1,30 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/api.dart';
 import 'signup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'profile.dart';
 import 'homepage.dart';
+import 'personaldata.dart';
+ // Import the ApiServices class
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final ApiServices apiServices = ApiServices(); // Create an instance of ApiServices
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   Future<void> login(BuildContext context) async {
     try {
-      await users.add({
-        'email': emailController.text,
-        'password': passwordController.text,
-      });
-      print("User logged in");
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User successfully logged in')));
-      Navigator.of(context).pushNamed("home");
+      QuerySnapshot querySnapshot = await users
+          .where('email', isEqualTo: emailController.text)
+          .where('password', isEqualTo: passwordController.text)
+          .get();
 
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomePage()),
-      // );
+      if (querySnapshot.docs.isNotEmpty) {
+        // User found
+        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        String userId = querySnapshot.docs.first.id; // Get the user ID
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+           // builder: (context) => PersonalDataPage(userId: userId, userData: userData),
+            builder: (context) => HomePage(),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User successfully logged in')));
+      } else {
+        // User not found
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid email or password')));
+      }
     } catch (error) {
       print("Failed to log in user: $error");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -105,7 +118,9 @@ class LoginPage extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Add functionality for password recovery here
+                  },
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(color: Colors.blue[900]),
@@ -149,6 +164,23 @@ class LoginPage extends StatelessWidget {
                     color: const Color.fromARGB(255, 10, 10, 10),
                     fontWeight: FontWeight.w500,
                   ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  apiServices.getRequest(); // Call the API request method
+                },
+                child: Text(
+                  'Test API',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 ),
               ),
             ],

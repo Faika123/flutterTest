@@ -1,45 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'productpage.dart';
 
 class HomePage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _homepagestate();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _homepagestate extends State<HomePage> {
+class _HomePageState extends State<HomePage> {
   final List<Map<String, String>> items = [
     {
       'image': 'images/image3.jpg',
-      'name': 'Item name',
-      'description': 'Description',
-      'price': '\$250.00'
+      'name': 'Item name 1',
+      'description': 'Description 1',
+      'price': '\$250.00',
     },
     {
       'image': 'images/image4.jpg',
-      'name': 'Item name',
-      'description': 'Description',
-      'price': '\$115.00'
+      'name': 'Item name 2',
+      'description': 'Description 2',
+      'price': '\$115.00',
     },
     {
       'image': 'images/image5.jpg',
-      'name': 'Item name',
-      'description': 'Description',
-      'price': '\$125.00'
+      'name': 'Item name 3',
+      'description': 'Description 3',
+      'price': '\$125.00',
     },
     {
       'image': 'images/image6.jpg',
-      'name': 'Item name',
-      'description': 'Description',
-      'price': '\$140.00'
+      'name': 'Item name 4',
+      'description': 'Description 4',
+      'price': '\$140.00',
     },
     {
       'image': 'images/image7.jpg',
-      'name': 'Item name',
-      'description': 'Description',
-      'price': '\$160.00'
+      'name': 'Item name 5',
+      'description': 'Description 5',
+      'price': '\$160.00',
     },
   ];
 
@@ -52,9 +51,8 @@ class _homepagestate extends State<HomePage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.notification_add, color: Colors.black),
-            onPressed: () {
-            },
+            icon: const Icon(Icons.notification_add, color: Colors.black),
+            onPressed: () {},
           ),
         ],
       ),
@@ -62,7 +60,7 @@ class _homepagestate extends State<HomePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
@@ -75,18 +73,18 @@ class _homepagestate extends State<HomePage> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
+              leading: const Icon(Icons.person),
+              title: const Text('Profile'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  MaterialPageRoute(builder: (context) => ProfilePage(userData: {},)),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushReplacement(
@@ -104,66 +102,25 @@ class _homepagestate extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search bar and person icon in a row
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search...',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 3,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.shopping_cart, color: Colors.black),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 24),
-              // Explore section title
-              Text(
+              _buildSearchBar(),
+              const SizedBox(height: 24),
+              const Text(
                 "Explore",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
-              // Horizontal scrollable card list
+              const SizedBox(height: 16),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: items.map((item) => _buildCard(item)).toList(),
                 ),
               ),
-              SizedBox(height: 20),
-              // Best Selling section title
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Best Selling",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
-              // Best Selling card
+              const SizedBox(height: 16),
               _buildBestSellingCard(context),
             ],
           ),
@@ -172,7 +129,47 @@ class _homepagestate extends State<HomePage> {
     );
   }
 
- Widget _buildCard(Map<String, String> item) {
+  Widget _buildSearchBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Search...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide.none,
+              ),
+              filled: true,
+              fillColor: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 3,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.shopping_cart, color: Colors.black),
+            onPressed: () {},
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCard(Map<String, String> item) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -189,7 +186,7 @@ class _homepagestate extends State<HomePage> {
       },
       child: Container(
         width: 150,
-        margin: EdgeInsets.only(right: 10),
+        margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -198,7 +195,7 @@ class _homepagestate extends State<HomePage> {
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 3,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -219,7 +216,7 @@ class _homepagestate extends State<HomePage> {
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: Icon(
+                  child: const Icon(
                     Icons.favorite,
                     color: Colors.red,
                   ),
@@ -230,14 +227,14 @@ class _homepagestate extends State<HomePage> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 item['name']!,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 item['description']!,
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
             Padding(
@@ -247,11 +244,11 @@ class _homepagestate extends State<HomePage> {
                 children: [
                   Text(
                     item['price']!,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  Icon(
+                  const Icon(
                     Icons.add_circle,
-                    color: const Color.fromARGB(255, 0, 13, 24),
+                    color: Color.fromARGB(255, 0, 13, 24),
                   ),
                 ],
               ),
@@ -264,7 +261,7 @@ class _homepagestate extends State<HomePage> {
 
   Widget _buildBestSellingCard(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -273,7 +270,7 @@ class _homepagestate extends State<HomePage> {
             color: Colors.grey.withOpacity(0.2),
             spreadRadius: 3,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -288,10 +285,10 @@ class _homepagestate extends State<HomePage> {
               width: 60,
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               Text(
                 'Minimal Chair',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -306,8 +303,8 @@ class _homepagestate extends State<HomePage> {
               ),
             ],
           ),
-          Spacer(),
-          Icon(
+          const Spacer(),
+          const Icon(
             Icons.arrow_forward_ios,
             color: Colors.blue,
           ),

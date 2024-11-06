@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/api.dart';
 import 'cartpage.dart';
+import 'comments_page.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   final String image;
   final String name;
   final String description;
@@ -15,9 +17,16 @@ class ProductPage extends StatelessWidget {
   });
 
   @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  final ApiServices apiServices = ApiServices();
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE0E8F9), // Light background color
+      backgroundColor: Color(0xFFE0E8F9),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -50,6 +59,7 @@ class ProductPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Détails du produit
               Stack(
                 children: [
                   Container(
@@ -57,7 +67,7 @@ class ProductPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       image: DecorationImage(
-                        image: AssetImage(image),
+                        image: AssetImage(widget.image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -65,19 +75,35 @@ class ProductPage extends StatelessWidget {
                   Positioned(
                     right: 16,
                     top: 16,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      ),
+                    child: Row(
+                      children: [
+                        // Bouton favori
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        // Icône de feedback
+                        IconButton(
+                          icon: Icon(Icons.feedback, color: Colors.blue),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => CommentsPage()),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 16),
               Text(
-                price,
+                widget.price,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -85,19 +111,30 @@ class ProductPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4),
-              Text(
-                name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(height: 4),
+              
+              // Row pour le nom et les étoiles
               Row(
-                children: List.generate(5, (index) {
-                  return Icon(
-                    index < 4 ? Icons.star : Icons.star_half,
-                    color: Colors.amber,
-                    size: 20,
-                  );
-                }),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Nom du produit
+                  Expanded(
+                    child: Text(
+                      widget.name,
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  // Évaluation
+                  Row(
+                    children: List.generate(5, (index) {
+                      return Icon(
+                        index < 4 ? Icons.star : Icons.star_half,
+                        color: Colors.amber,
+                        size: 20,
+                      );
+                    }),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               Text(
@@ -121,7 +158,7 @@ class ProductPage extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                description,
+                widget.description,
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
               SizedBox(height: 16),
@@ -148,6 +185,7 @@ class ProductPage extends StatelessWidget {
                   },
                 ),
               ),
+              SizedBox(height: 24),
             ],
           ),
         ),
