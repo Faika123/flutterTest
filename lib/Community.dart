@@ -3,35 +3,57 @@
 import 'package:flutter/material.dart';
 
 class CommunityPage extends StatelessWidget {
+  const CommunityPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F7FB),
+      backgroundColor: const Color(0xFFF5F7FB),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-        centerTitle: true, // Corrected to boolean
+        iconTheme: const IconThemeData(color: Colors.black),
+        centerTitle: true,
+        title: const Text(
+          'Community',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Learn Stock, Educate the World',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+            const Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Learn Stock',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ), 
+                    textAlign: TextAlign.center,
+                  ),
+                          Text(
+                    'Educate the World',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ), 
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
-              textAlign: TextAlign.start, // Corrected property name
+              textAlign: TextAlign.start,
               decoration: InputDecoration(
                 hintText: 'Search something...',
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none,
@@ -40,13 +62,14 @@ class CommunityPage extends StatelessWidget {
                 fillColor: Colors.white,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView(
-                children: [
+                children: const [
                   CommunityCard(
                     title: 'How to Start Investing in uStock',
-                    description: 'Lemme tell you this, world of investing is really legit...',
+                    description:
+                        'Lemme tell you this, world of investing is really legit...',
                     participants: [
                       'assets/images/user1.png',
                       'assets/images/user2.png',
@@ -88,7 +111,7 @@ class CommunityCard extends StatelessWidget {
   final String description;
   final List<String> participants;
 
-  CommunityCard({
+  const CommunityCard({super.key, 
     required this.title,
     required this.description,
     required this.participants,
@@ -97,7 +120,7 @@ class CommunityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -106,7 +129,7 @@ class CommunityCard extends StatelessWidget {
             color: Colors.grey.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 10,
-            offset: Offset(0, 5),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -118,18 +141,18 @@ class CommunityCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   description,
                   style: TextStyle(color: Colors.grey[600]),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: participants
                       .map((participant) => Padding(
@@ -152,10 +175,10 @@ class CommunityCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Row(
+            child: const Row(
               children: [
                 Text(
-                  'CHarfn Mohamed',
+                  'Mhammed Charfi',
                   style: TextStyle(color: Colors.black),
                 ),
                 Icon(

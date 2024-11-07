@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pagesigneup.dart';
-import 'package:flutter_application_1/profil.dart';
+import 'signeup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'profile.dart';
+import 'homepage.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -11,22 +12,19 @@ class LoginPage extends StatelessWidget {
 
   Future<void> login(BuildContext context) async {
     try {
-      // Here you can add your authentication logic.
-      // For demonstration, we’re just adding user data to Firestore.
       await users.add({
         'email': emailController.text,
-        'password': passwordController
-            .text, // Consider hashing the password in a real app
+        'password': passwordController.text,
       });
       print("User logged in");
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('User successfully logged in')));
+      Navigator.of(context).pushNamed("home");
 
-      // Navigate to the Profile page after successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ProfilePage()),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomePage()),
+      // );
     } catch (error) {
       print("Failed to log in user: $error");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,8 +43,8 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 80,
-                height: 80,
+                width: 100,
+                height: 100,
                 child: Image.asset(
                   "assets/images/image1.png",
                   height: 250,

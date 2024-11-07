@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PersonalDataPage extends StatefulWidget {
+  const PersonalDataPage({super.key});
+
   @override
   _PersonalDataPageState createState() => _PersonalDataPageState();
 }
@@ -34,11 +36,11 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Personal Data"),
+        title: const Text("Personal Data"),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -54,53 +56,53 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
                       8), // Rounded corners for the profile image
-                  image: DecorationImage(
+                  image: const DecorationImage(
                     image:
-                        AssetImage('assets/images/image2.jpg'), // Profile image
+                        AssetImage('assets/images/image2.png'), // Profile image
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Text("Your Name"),
-            TextField(
+            const SizedBox(height: 20),
+            const Text("Your Name"),
+            const TextField(
               decoration: InputDecoration(
-                hintText: 'William John Malik',
+                hintText: 'charfi Mariem',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
-            Text("Date of Birth"),
+            const SizedBox(height: 16),
+            const Text("Date of Birth"),
             GestureDetector(
               onTap: () => _selectDate(context),
               child: AbsorbPointer(
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: '${_selectedDate.toLocal()}'.split(' ')[0],
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 16),
-            Text("Your Job"),
-            TextField(
+            const SizedBox(height: 16),
+            const Text("Your Job"),
+            const TextField(
               decoration: InputDecoration(
                 hintText: 'Successor Designer',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
-            Text("Monthly Income"),
+            const SizedBox(height: 16),
+            const Text("Monthly Income"),
             TextField(
               readOnly: true,
               decoration: InputDecoration(
                 hintText: _selectedIncome ?? 'Select Income',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 suffixIcon: DropdownButton<String>(
-                  icon: Icon(Icons.arrow_drop_down),
-                  underline: SizedBox(),
+                  icon: const Icon(Icons.arrow_drop_down),
+                  underline: const SizedBox(),
                   items: incomeOptions
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
@@ -116,15 +118,15 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
-            Text("Gender"),
+            const SizedBox(height: 16),
+            const Text("Gender"),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Box for Male
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
@@ -140,16 +142,16 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                             });
                           },
                         ),
-                        Text('Male'),
+                        const Text('Male'),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 // Box for Female
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
@@ -165,7 +167,7 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                             });
                           },
                         ),
-                        Text('Female'),
+                        const Text('Female'),
                       ],
                     ),
                   ),
