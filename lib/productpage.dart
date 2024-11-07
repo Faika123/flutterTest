@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/services/api.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'cartpage.dart';
-import 'comments_page.dart';
 
 class ProductPage extends StatefulWidget {
   final String image;
@@ -21,7 +20,21 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final ApiServices apiServices = ApiServices();
+  // Fonction pour ajouter le produit au panier dans Firebase
+  Future<void> addToCart() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.collection('cart').add({
+      'name': widget.name,
+      'image': widget.image,
+      'description': widget.description,
+      'price': widget.price,
+      'quantity': 1, // Quantité par défaut
+    });
+    // Afficher un message de confirmation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${widget.name} ajouté au panier!')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +72,6 @@ class _ProductPageState extends State<ProductPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Détails du produit
               Stack(
                 children: [
                   Container(
@@ -70,33 +82,6 @@ class _ProductPageState extends State<ProductPage> {
                         image: AssetImage(widget.image),
                         fit: BoxFit.cover,
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 16,
-                    top: 16,
-                    child: Row(
-                      children: [
-                        // Bouton favori
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        // Icône de feedback
-                        IconButton(
-                          icon: Icon(Icons.feedback, color: Colors.blue),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => CommentsPage()),
-                            );
-                          },
-                        ),
-                      ],
                     ),
                   ),
                 ],
@@ -111,45 +96,10 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
               SizedBox(height: 4),
-              
-              // Row pour le nom et les étoiles
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Nom du produit
-                  Expanded(
-                    child: Text(
-                      widget.name,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  // Évaluation
-                  Row(
-                    children: List.generate(5, (index) {
-                      return Icon(
-                        index < 4 ? Icons.star : Icons.star_half,
-                        color: Colors.amber,
-                        size: 20,
-                      );
-                    }),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
               Text(
-                "Color option",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  ColorOption(Colors.red),
-                  SizedBox(width: 8),
-                  ColorOption(Colors.black),
-                  SizedBox(width: 8),
-                  ColorOption(Colors.blueGrey),
-                ],
+                widget.name,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 16),
               Text(
@@ -177,36 +127,13 @@ class _ProductPageState extends State<ProductPage> {
                     "Add to Cart",
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CartPage()),
-                    );
-                  },
+                  onPressed: addToCart,
                 ),
               ),
               SizedBox(height: 24),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ColorOption extends StatelessWidget {
-  final Color color;
-  ColorOption(this.color);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey),
       ),
     );
   }

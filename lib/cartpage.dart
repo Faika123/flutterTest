@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(CartPage());
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -8,104 +7,64 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  // Define quantities for each cart item
-  int quantityMinimalistChair = 2;
-  int quantityElegantWhiteChair = 1;
-  int quantityVintageChair = 1;
+  // Liste pour suivre les éléments sélectionnés
+  Map<String, bool> selectedItems = {};
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Cart", style: TextStyle(color: Colors.black)),
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cart", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Color(0xFFF5F5F5), // Light grey background
-        body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Cart Items
-              Expanded(
-                child: ListView(
-                  children: [
-                    _buildCartItem('Minimalist Chair', 'assets/images/image3.jpg', 235.00, quantityMinimalistChair, (newQuantity) {
-                      setState(() {
-                        quantityMinimalistChair = newQuantity;
-                      });
-                    }),
-                    _buildCartItem('Elegant White Chair', 'assets/images/image5.jpg', 124.00, quantityElegantWhiteChair, (newQuantity) {
-                      setState(() {
-                        quantityElegantWhiteChair = newQuantity;
-                      });
-                    }),
-                    _buildCartItem('Vintage Chair', 'assets/images/image4.jpg', 89.00, quantityVintageChair, (newQuantity) {
-                      setState(() {
-                        quantityVintageChair = newQuantity;
-                      });
-                    }),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
+      ),
+      backgroundColor: Color(0xFFF5F5F5),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('cart').snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
 
-              // Summary
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    _buildSummaryRow('Selected Items', '\$235.00'),
-                    _buildSummaryRow('Shipping Fee', '\$30.00'),
-                    Divider(),
-                    _buildSummaryRow('Subtotal', '\$265.00', isTotal: true),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
+          return ListView(
+            padding: EdgeInsets.all(16.0),
+            children: snapshot.data!.docs.map((doc) {
+              double price = double.tryParse(doc['price'].replaceAll("\$", "")) ?? 0.0;
+              String docId = doc.id;
 
-              // Checkout Button
-              Container(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'Checkout',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+              // Initialiser l'état de sélection pour chaque élément
+              selectedItems.putIfAbsent(docId, () => false);
+
+              return _buildCartItem(
+                docId,
+                doc['name'],
+                doc['image'],
+                price,
+                doc['quantity'],
+                selectedItems[docId]!,
+              );
+            }).toList(),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildCartItem(String title, String imagePath, double price, int quantity, Function(int) onQuantityChanged) {
+  Widget _buildCartItem(String docId, String title, String imagePath, double price, int quantity, bool isSelected) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Checkbox(value: true, onChanged: (value) {}),
+          Checkbox(
+            value: isSelected,
+            onChanged: (bool? value) {
+              setState(() {
+                selectedItems[docId] = value!;
+              });
+            },
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
@@ -137,7 +96,12 @@ class _CartPageState extends State<CartPage> {
                 icon: Icon(Icons.remove),
                 onPressed: () {
                   if (quantity > 1) {
-                    onQuantityChanged(quantity - 1);
+                    FirebaseFirestore.instance
+                        .collection('cart')
+                        .doc(docId)
+                        .update({'quantity': quantity - 1});
+                  } else {
+                    _showDeleteConfirmationDialog(docId);
                   }
                 },
               ),
@@ -155,7 +119,10 @@ class _CartPageState extends State<CartPage> {
               IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  onQuantityChanged(quantity + 1);
+                  FirebaseFirestore.instance
+                      .collection('cart')
+                      .doc(docId)
+                      .update({'quantity': quantity + 1});
                 },
               ),
             ],
@@ -165,27 +132,23 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value, {bool isTotal = false}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              color: isTotal ? Colors.black : Colors.grey,
-            ),
+  void _showDeleteConfirmationDialog(String docId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Item"),
+        content: Text("Are you sure you want to delete this item from your cart?"),
+        actions: [
+          TextButton(
+            child: Text("Cancel"),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              color: isTotal ? Colors.red : Colors.grey,
-            ),
+          TextButton(
+            child: Text("Delete"),
+            onPressed: () {
+              FirebaseFirestore.instance.collection('cart').doc(docId).delete();
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),
