@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'productpage.dart';
+import 'favoris.dart'; // Importez la page de favoris
 
 class HomePage extends StatefulWidget {
   @override
@@ -42,6 +43,9 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+  // Liste pour stocker les favoris
+  List<Map<String, String>> favoriteItems = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +82,19 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage(userData: {},)),
+                  MaterialPageRoute(builder: (context) => ProfilePage(userData: {})),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text('Favoris'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FavorisPage(favoriteItems: favoriteItems),
+                  ),
                 );
               },
             ),
@@ -115,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                   children: items.map((item) => _buildCard(item)).toList(),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               const Text(
                 "Best Selling",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -170,6 +186,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCard(Map<String, String> item) {
+    bool isFavorite = favoriteItems.contains(item);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -216,9 +233,20 @@ class _HomePageState extends State<HomePage> {
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
+                  child: IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (isFavorite) {
+                          favoriteItems.remove(item);
+                        } else {
+                          favoriteItems.add(item);
+                        }
+                      });
+                    },
                   ),
                 ),
               ],
